@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SecureORM.Core/SecureORM.Core.csproj" />
+  <Project Path="SecureORM.EntityFrameworkCore/SecureORM.EntityFrameworkCore.csproj" />
+  <Project Path="SecureORM.Tests/SecureORM.Tests.csproj" />
+</Solution>

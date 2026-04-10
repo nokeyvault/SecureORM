@@ -1,0 +1,15 @@
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\bin\Debug\net8.0\SecureORM.EntityFrameworkCore.deps.json
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\bin\Debug\net8.0\SecureORM.EntityFrameworkCore.dll
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\bin\Debug\net8.0\SecureORM.EntityFrameworkCore.pdb
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\bin\Debug\net8.0\SecureORM.Core.dll
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\bin\Debug\net8.0\SecureORM.Core.pdb
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\obj\Debug\net8.0\SecureORM.EntityFrameworkCore.csproj.AssemblyReference.cache
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\obj\Debug\net8.0\SecureORM.EntityFrameworkCore.GeneratedMSBuildEditorConfig.editorconfig
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\obj\Debug\net8.0\SecureORM.EntityFrameworkCore.AssemblyInfoInputs.cache
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\obj\Debug\net8.0\SecureORM.EntityFrameworkCore.AssemblyInfo.cs
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\obj\Debug\net8.0\SecureORM.EntityFrameworkCore.csproj.CoreCompileInputs.cache
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\obj\Debug\net8.0\SecureOR.070B9B7E.Up2Date
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\obj\Debug\net8.0\SecureORM.EntityFrameworkCore.dll
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\obj\Debug\net8.0\refint\SecureORM.EntityFrameworkCore.dll
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\obj\Debug\net8.0\SecureORM.EntityFrameworkCore.pdb
+D:\Personal\Projects\nokeyvault\src\SecureORM.EntityFrameworkCore\obj\Debug\net8.0\ref\SecureORM.EntityFrameworkCore.dll
