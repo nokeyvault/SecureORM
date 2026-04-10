@@ -2,12 +2,15 @@
 
 [![NuGet](https://img.shields.io/nuget/v/SecureORM.Core.svg?label=SecureORM.Core)](https://www.nuget.org/packages/SecureORM.Core)
 [![NuGet](https://img.shields.io/nuget/v/SecureORM.EntityFrameworkCore.svg?label=SecureORM.EntityFrameworkCore)](https://www.nuget.org/packages/SecureORM.EntityFrameworkCore)
+[![NuGet](https://img.shields.io/nuget/v/SecureORM.Dapper.svg?label=SecureORM.Dapper)](https://www.nuget.org/packages/SecureORM.Dapper)
+[![NuGet](https://img.shields.io/nuget/v/SecureORM.AspNetCore.svg?label=SecureORM.AspNetCore)](https://www.nuget.org/packages/SecureORM.AspNetCore)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-8.0%2B-blue.svg)](https://dotnet.microsoft.com/)
+[![Tests](https://img.shields.io/badge/tests-46%20passing-brightgreen.svg)]()
 
-**Order-Preserving Encoding (OPE) extensions for Entity Framework Core.**
+**Query encrypted data without decryption.** Order-Preserving Encoding extensions for Entity Framework Core, Dapper, and ASP.NET Core.
 
-SecureORM lets you store encoded data in your database that is completely useless without your secret key — while still supporting `ORDER BY`, exact match, range (`BETWEEN`), and prefix (`LIKE`) queries directly on the encoded columns. No decryption needed at the database layer.
+SecureORM lets you store encoded data in your database that is completely useless without your secret key — while still supporting `ORDER BY`, exact match, range (`BETWEEN`), and prefix (`LIKE`) queries directly on the encoded columns.
 
 ```
   Your App                    Database
@@ -40,37 +43,44 @@ Most encryption schemes (AES, etc.) destroy the ability to query data. You encry
 
 ## Features
 
-- **Transparent encoding** — decorate properties with `[OpeEncoded]`, `[OpeInteger]`, or `[OpeDecimal]` and forget about it
-- **EF Core Value Converters** — automatic encode-on-write, decode-on-read
-- **Query support** — exact match, ORDER BY, prefix search, range queries all work on encoded data
-- **Per-tenant isolation** — different client keys produce completely different encodings
-- **Deterministic** — same key + same input = same output (enables exact match queries)
-- **Type support** — strings, integers (`long`), and decimals
-- **Fluent API + Attributes** — configure via attributes or `ModelBuilder` fluent API
-- **DI-friendly** — one-line setup with `AddSecureOrm()`
-- **Provider-agnostic** — works with SQL Server, PostgreSQL, SQLite, and any EF Core provider
+| Feature | Description |
+|---|---|
+| **Transparent encoding** | Decorate properties with `[OpeEncoded]`, `[OpeInteger]`, `[OpeDecimal]` — encoding is invisible |
+| **Full type support** | `string`, `long`, `int`, `short`, `decimal`, `float`, `double` |
+| **Negative numbers** | Opt-in support with preserved sort order across negative/zero/positive |
+| **Unicode normalization** | Pluggable normalizer for accented characters, case folding, transliteration |
+| **Native LINQ queries** | `OpeStartsWith()` and `OpeInRange()` translate directly to SQL |
+| **Column sizing** | Auto-calculate database column sizes with `OpeColumnSizing` helpers |
+| **Key rotation** | Batch re-encode all data when rotating encryption keys |
+| **Dapper support** | Wrapper types and type handlers for Dapper |
+| **Multi-tenant** | ASP.NET Core middleware resolves per-tenant keys from headers, claims, or routes |
+| **Benchmarks** | BenchmarkDotNet project for encode/decode throughput and query performance |
+| **Per-tenant isolation** | Different client keys produce completely different encodings |
+| **Provider-agnostic** | Works with SQL Server, PostgreSQL, SQLite, MySQL, and any EF Core provider |
 
 ---
 
-## Installation
+## Packages
 
 ```bash
 dotnet add package SecureORM.Core
 dotnet add package SecureORM.EntityFrameworkCore
+dotnet add package SecureORM.Dapper
+dotnet add package SecureORM.AspNetCore
 ```
 
-Or via the NuGet Package Manager:
+| Package | Description |
+|---|---|
+| **SecureORM.Core** | Standalone OPE encoding engine. Zero dependencies. |
+| **SecureORM.EntityFrameworkCore** | EF Core integration — attributes, value converters, LINQ translator, DI, key rotation. |
+| **SecureORM.Dapper** | Dapper integration — wrapper types, type handlers, query builder. |
+| **SecureORM.AspNetCore** | Multi-tenant middleware — per-request key resolution from headers, claims, or routes. |
 
-```powershell
-Install-Package SecureORM.Core
-Install-Package SecureORM.EntityFrameworkCore
-```
-
-> **Note:** `SecureORM.EntityFrameworkCore` depends on `SecureORM.Core` and will pull it in automatically. If you only need the standalone encoder without EF Core, install just `SecureORM.Core`.
+> `SecureORM.EntityFrameworkCore` and `SecureORM.Dapper` both pull in `SecureORM.Core` automatically.
 
 ---
 
-## Quick Start
+## Quick Start (EF Core)
 
 ### 1. Define Your Entity
 
@@ -81,34 +91,36 @@ public class User
 {
     public int Id { get; set; }
 
-    [OpeEncoded]
+    [OpeEncoded(MaxLength = 100)]    // auto-sizes DB column to 600 chars
     public string Name { get; set; } = string.Empty;
 
     [OpeInteger]
-    public long Age { get; set; }
+    public int Age { get; set; }     // int, short, and long all supported
 
-    [OpeDecimal(2)]  // 2 decimal places
+    [OpeDecimal(2)]
     public decimal Salary { get; set; }
 
-    // Properties without attributes are stored as-is
-    public string InternalNotes { get; set; } = string.Empty;
+    public string InternalNotes { get; set; } = string.Empty;  // not encoded
 }
 ```
 
 ### 2. Register Services
 
 ```csharp
-// Program.cs or Startup.cs
 using SecureORM.EntityFrameworkCore.Extensions;
 
 builder.Services.AddSecureOrm(options =>
 {
     options.ClientKey = builder.Configuration["SecureOrm:ClientKey"]!;
-    options.NumberPadWidth = 12; // supports integers up to 12 digits
+    options.NumberPadWidth = 12;
+    options.SupportNegatives = true;  // enable negative number encoding
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));  // or UseSqlite, UseNpgsql, etc.
+{
+    options.UseSqlServer(connectionString);
+    options.UseSecureOrmTranslations(/* encoder injected via DI */);
+});
 ```
 
 ### 3. Configure DbContext
@@ -120,14 +132,10 @@ using SecureORM.EntityFrameworkCore.Extensions;
 public class AppDbContext : DbContext
 {
     private readonly OPEEncoder _encoder;
-
     public DbSet<User> Users => Set<User>();
 
     public AppDbContext(DbContextOptions<AppDbContext> options, OPEEncoder encoder)
-        : base(options)
-    {
-        _encoder = encoder;
-    }
+        : base(options) => _encoder = encoder;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -142,74 +150,265 @@ That's it. Your data is now encoded transparently.
 
 ## Querying Encoded Data
 
-### Exact Match (just works)
-
-EF Core auto-encodes the comparison value through the value converter:
+### Exact Match — just works
 
 ```csharp
-// Natural LINQ — no special handling needed
 var user = db.Users.FirstOrDefault(u => u.Name == "alice");
 var young = db.Users.Where(u => u.Age == 25).ToList();
 ```
 
-### ORDER BY (just works)
-
-Encoded values sort in the same order as the originals:
+### ORDER BY — just works
 
 ```csharp
-// Lexicographic order on encoded column = correct order
 var sorted = db.Users.OrderBy(u => u.Name).ToList();
 var byAge = db.Users.OrderByDescending(u => u.Age).ToList();
 ```
 
-### Prefix Search
-
-Use `OpeQueryHelper` to pre-encode the prefix, then query with raw SQL:
+### Native LINQ — Prefix Search
 
 ```csharp
-public class UserService
-{
-    private readonly AppDbContext _db;
-    private readonly OpeQueryHelper _query;
+using SecureORM.EntityFrameworkCore.Linq;
 
-    public UserService(AppDbContext db, OpeQueryHelper query)
-    {
-        _db = db;
-        _query = query;
-    }
-
-    public List<User> SearchByNamePrefix(string prefix)
-    {
-        var pattern = _query.EncodePrefixLike(prefix); // "encoded_prefix%"
-
-        return _db.Users
-            .FromSqlRaw("SELECT * FROM Users WHERE Name LIKE {0}", pattern)
-            .ToList();
-    }
-}
+// Translates to: WHERE Name LIKE 'encoded_prefix%'
+var results = db.Users.Where(u => u.Name.OpeStartsWith("jo")).ToList();
 ```
 
-### Range Query (BETWEEN)
+### Native LINQ — Range Query
 
 ```csharp
-public List<User> GetByAgeRange(long minAge, long maxAge)
-{
-    var (low, high) = _query.EncodeIntegerRange(minAge, maxAge);
+using SecureORM.EntityFrameworkCore.Linq;
 
-    return _db.Users
-        .FromSqlRaw("SELECT * FROM Users WHERE Age >= {0} AND Age <= {1}", low, high)
-        .OrderBy(u => u.Age)
-        .ToList();
+// Translates to: WHERE Age >= encoded_20 AND Age <= encoded_30
+var results = db.Users.Where(u => u.Age.OpeInRange(20, 30)).ToList();
+```
+
+### Raw SQL Alternative (works with any provider)
+
+```csharp
+var helper = new OpeQueryHelper(encoder);
+
+// Prefix
+var pattern = helper.EncodePrefixLike("jo");
+var results = db.Users
+    .FromSqlRaw("SELECT * FROM Users WHERE Name LIKE {0}", pattern)
+    .ToList();
+
+// Range
+var (low, high) = helper.EncodeIntegerRange(20, 30);
+var results = db.Users
+    .FromSqlRaw("SELECT * FROM Users WHERE Age >= {0} AND Age <= {1}", low, high)
+    .ToList();
+```
+
+---
+
+## Negative Number Support
+
+Enable negative numbers in the encoder to support values like temperatures, account balances, and offsets:
+
+```csharp
+builder.Services.AddSecureOrm(options =>
+{
+    options.ClientKey = "your-key";
+    options.SupportNegatives = true;   // enables negative int/decimal encoding
+});
+```
+
+Sort order is fully preserved across negatives:
+
+```
+encoded(-100) < encoded(-1) < encoded(0) < encoded(1) < encoded(100)
+```
+
+```csharp
+var encoder = new OPEEncoder("key", supportNegatives: true);
+
+encoder.EncodeInteger(-42);         // works
+encoder.EncodeDecimal(-99.50m, 2);  // works
+
+var (low, high) = encoder.EncodeIntegerRange(-10, 10);  // range across zero
+```
+
+---
+
+## Unicode Normalization
+
+Handle accented characters, case folding, and non-ASCII input:
+
+```csharp
+using SecureORM.Core.Normalization;
+
+var normalizer = new UnicodeNormalizer(new UnicodeNormalizerOptions
+{
+    Transliterate = true,      // cafe with accent to "cafe"
+    ToLowerCase = false,       // optional case folding
+    ReplacementChar = '?'      // fallback for untransliterable chars (null = throw)
+});
+
+builder.Services.AddSecureOrm(options =>
+{
+    options.ClientKey = "your-key";
+    options.Normalizer = normalizer;
+});
+```
+
+```csharp
+var encoder = new OPEEncoder("key", normalizer: normalizer);
+
+encoder.EncodeString("cafe\u0301");   // "cafe" (accent stripped)
+encoder.EncodeString("Espa\u00F1a");  // "Espana" (n tilde transliterated)
+```
+
+> **Note:** Decoding returns the normalized form, not the original input. Store originals separately if exact round-trip is needed.
+
+---
+
+## Column Sizing
+
+Calculate exact database column sizes for your encoded data:
+
+```csharp
+using SecureORM.Core.Encoding;
+
+OpeColumnSizing.EncodedStringLength(100);     // 600 chars
+OpeColumnSizing.EncodedIntegerLength(12);     // 72 chars
+OpeColumnSizing.EncodedDecimalLength(12, 2);  // 84 chars
+
+// With negative number support (adds 1 sign-prefix character)
+OpeColumnSizing.EncodedIntegerLength(12, supportNegatives: true);  // 78 chars
+```
+
+Or use the `MaxLength` attribute for automatic column sizing:
+
+```csharp
+[OpeEncoded(MaxLength = 100)]   // DB column auto-sized to nvarchar(600)
+public string Name { get; set; }
+```
+
+---
+
+## Key Rotation
+
+Re-encode all data when rotating encryption keys:
+
+```csharp
+using SecureORM.EntityFrameworkCore.Migration;
+
+var oldEncoder = new OPEEncoder("old-key-2024");
+var newEncoder = new OPEEncoder("new-key-2025");
+var rotator = new OpeKeyRotator();
+
+await rotator.ReEncodeAllAsync<User>(
+    dbContext,
+    oldEncoder,
+    newEncoder,
+    new Dictionary<string, ColumnEncodingType>
+    {
+        ["Name"] = ColumnEncodingType.String,
+        ["Age"] = ColumnEncodingType.Integer,
+        ["Salary"] = ColumnEncodingType.Decimal2
+    },
+    batchSize: 1000,
+    progress: new Progress<KeyRotationProgress>(p =>
+        Console.WriteLine($"Rotated {p.ProcessedCount}/{p.TotalCount} rows ({p.PercentComplete:F0}%)"))
+);
+```
+
+---
+
+## Dapper Integration
+
+Use SecureORM with Dapper via wrapper types:
+
+```csharp
+using SecureORM.Dapper.Types;
+using SecureORM.Dapper.Extensions;
+
+// Register handlers at startup
+DapperSecureOrmExtensions.AddSecureOrmDapper(encoder, decimalFractionalWidth: 2);
+
+// Define your model with wrapper types
+public class Employee
+{
+    public int Id { get; set; }
+    public OpeString Name { get; set; }     // auto-encodes/decodes
+    public OpeInt64 Age { get; set; }       // auto-encodes/decodes
 }
 
-public List<User> GetBySalaryRange(decimal minSalary, decimal maxSalary)
-{
-    var (low, high) = _query.EncodeDecimalRange(minSalary, maxSalary, fractionalWidth: 2);
+// Insert — values are encoded automatically
+connection.Execute(
+    "INSERT INTO Employees (Name, Age) VALUES (@Name, @Age)",
+    new { Name = (OpeString)"alice", Age = (OpeInt64)30L });
 
-    return _db.Users
-        .FromSqlRaw("SELECT * FROM Users WHERE Salary >= {0} AND Salary <= {1}", low, high)
-        .OrderBy(u => u.Salary)
-        .ToList();
+// Query — values are decoded automatically
+var employee = connection.QueryFirst<Employee>("SELECT * FROM Employees WHERE Id = 1");
+Console.WriteLine(employee.Name);  // "alice"
+
+// Prefix and range queries
+var qb = new OpeQueryBuilder(encoder);
+var pattern = qb.EncodePrefixLike("ali");
+var results = connection.Query<Employee>(
+    "SELECT * FROM Employees WHERE Name LIKE @pattern", new { pattern });
+```
+
+---
+
+## Multi-Tenant (ASP.NET Core)
+
+Resolve encryption keys per-tenant from HTTP requests:
+
+```csharp
+using SecureORM.AspNetCore.Extensions;
+using SecureORM.AspNetCore.Tenancy;
+
+// In Program.cs
+builder.Services.AddSecureOrmMultiTenant(options =>
+{
+    options.NumberPadWidth = 12;
+    options.SupportNegatives = true;
+    options.DefaultTenantKey = "";   // leave empty to require tenant key
+});
+
+// Pick a resolver (or combine multiple)
+builder.Services.AddTenantKeyResolver(
+    new HeaderTenantKeyResolver("X-Tenant-Key"));    // from header
+
+// Or from JWT claims
+builder.Services.AddTenantKeyResolver(
+    new ClaimTenantKeyResolver("tenant_key"));       // from auth claim
+
+// Or from route
+builder.Services.AddTenantKeyResolver(
+    new RouteTenantKeyResolver("tenantId"));         // from route data
+
+// Or combine them (tries each in order)
+builder.Services.AddTenantKeyResolver(
+    new CompositeTenantKeyResolver(
+        new HeaderTenantKeyResolver(),
+        new ClaimTenantKeyResolver(),
+        new RouteTenantKeyResolver()));
+
+// Add middleware
+app.UseAuthentication();
+app.UseSecureOrmMultiTenant();   // after auth, before controllers
+
+// In your DbContext or services, inject the per-request encoder:
+public class TenantDbContext : DbContext
+{
+    private readonly TenantOpeEncoderAccessor _accessor;
+
+    public TenantDbContext(
+        DbContextOptions options,
+        TenantOpeEncoderAccessor accessor) : base(options)
+    {
+        _accessor = accessor;
+    }
+
+    protected override void OnModelCreating(ModelBuilder mb)
+    {
+        if (_accessor.Encoder != null)
+            mb.ApplyOpeEncodings(_accessor.Encoder);
+    }
 }
 ```
 
@@ -217,7 +416,7 @@ public List<User> GetBySalaryRange(decimal minSalary, decimal maxSalary)
 
 ## Fluent API (Alternative to Attributes)
 
-If you prefer configuring via `OnModelCreating` instead of attributes:
+Configure encoding in `OnModelCreating` instead of using attributes:
 
 ```csharp
 protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -225,41 +424,67 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
     modelBuilder.Entity<User>(entity =>
     {
         entity.Property(u => u.Name).HasOpeEncoding(_encoder);
-        entity.Property(u => u.Age).HasOpeIntegerEncoding(_encoder);
-        entity.Property(u => u.Salary).HasOpeDecimalEncoding(_encoder, fractionalWidth: 2);
+        entity.Property(u => u.Age).HasOpeIntegerEncoding(_encoder);      // works with int, short, long
+        entity.Property(u => u.Salary).HasOpeDecimalEncoding(_encoder, fractionalWidth: 2);  // works with decimal, float, double
     });
 }
 ```
 
 ---
 
-## Standalone Encoder (Without EF Core)
+## Standalone Encoder (Without any ORM)
 
-If you only need the encoding engine without Entity Framework, install just `SecureORM.Core`:
+Install just `SecureORM.Core` for the encoding engine alone:
 
 ```csharp
 using SecureORM.Core.Encoding;
 
-var encoder = new OPEEncoder("your-secret-client-key");
+var encoder = new OPEEncoder("your-secret-key", supportNegatives: true);
 
 // Strings
 string encoded = encoder.EncodeString("alice");
 string decoded = encoder.DecodeString(encoded);  // "alice"
 
-// Integers
-string encodedAge = encoder.EncodeInteger(30);
-long decodedAge = encoder.DecodeInteger(encodedAge);  // 30
+// Integers (including negatives)
+encoder.EncodeInteger(42);
+encoder.EncodeInteger(-100);
 
 // Decimals
-string encodedSalary = encoder.EncodeDecimal(55000.50m, fractionalWidth: 2);
-decimal decodedSalary = encoder.DecodeDecimal(encodedSalary, fractionalWidth: 2);  // 55000.50
+encoder.EncodeDecimal(55000.50m, fractionalWidth: 2);
 
 // Prefix for LIKE queries
 string prefix = encoder.EncodePrefix("ali");
 
 // Range bounds for BETWEEN queries
-var (low, high) = encoder.EncodeIntegerRange(20, 40);
+var (low, high) = encoder.EncodeIntegerRange(-10, 50);
 ```
+
+---
+
+## Supported Data Types
+
+| Attribute | .NET Types | DB Column | Encoding |
+|---|---|---|---|
+| `[OpeEncoded]` | `string` | `TEXT` / `NVARCHAR` | Each character becomes a 6-digit code |
+| `[OpeInteger]` | `long`, `int`, `short` | `TEXT` / `NVARCHAR` | Zero-padded, then character-encoded |
+| `[OpeDecimal(n)]` | `decimal`, `float`, `double` | `TEXT` / `NVARCHAR` | Scaled by 10^n, zero-padded, then character-encoded |
+
+### Character Support
+
+The encoder supports 95 printable ASCII characters:
+- Space
+- Punctuation: `` !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ``
+- Digits: `0-9`
+- Uppercase: `A-Z`
+- Lowercase: `a-z`
+
+Use `UnicodeNormalizer` to handle characters outside this set.
+
+### Number Limits
+
+- **Integers:** Up to `numberPadWidth` digits (default 12, max 18). Default range: -999,999,999,999 to 999,999,999,999.
+- **Decimals:** Integer part up to `numberPadWidth` digits + `fractionalWidth` decimal places.
+- **Negative numbers:** Supported when `supportNegatives: true`. Defaults to off for backward compatibility.
 
 ---
 
@@ -267,10 +492,11 @@ var (low, high) = encoder.EncodeIntegerRange(20, 40);
 
 ### The Encoding Algorithm
 
-1. **Character Universe** — 95 printable ASCII characters (space, punctuation, digits, A-Z, a-z), each mapped to a 6-digit numeric code
-2. **Order Preservation** — codes are assigned in strict ascending order, so `'a' < 'b'` implies `code('a') < code('b')`
-3. **Key-Derived Offset** — SHA-256 of your client key produces a deterministic offset that shifts all codes, making encodings unique per key
-4. **Number Handling** — integers and decimals are zero-padded to fixed width before encoding, so numeric order equals lexicographic order
+1. **Character Universe** — 95 printable ASCII characters, each mapped to a 6-digit numeric code
+2. **Order Preservation** — codes assigned in strict ascending order: `'a' < 'b'` implies `code('a') < code('b')`
+3. **Key-Derived Offset** — SHA-256 of client key produces a deterministic offset, making encodings unique per key
+4. **Number Handling** — integers/decimals are zero-padded to fixed width before encoding
+5. **Negative Numbers** — sign prefix (`0` = negative, `1` = positive) + nines' complement preserves order across zero
 
 ### What the Database Sees
 
@@ -295,16 +521,7 @@ Without the client key, these are just meaningless digit strings.
 | Database + knowledge of OPE scheme | Relative ordering of values (inherent to any OPE) |
 | Database + client key | Everything — **protect your keys** |
 
-**Key point:** The encoded data is useless unless the attacker gets both the key and the data at the same time. Keep your key in a secure vault (Azure Key Vault, AWS KMS, HashiCorp Vault, etc.), separate from your database.
-
----
-
-## Packages
-
-| Package | Description | NuGet |
-|---|---|---|
-| **SecureORM.Core** | Standalone OPE encoding engine. No dependencies. | [![NuGet](https://img.shields.io/nuget/v/SecureORM.Core.svg)](https://www.nuget.org/packages/SecureORM.Core) |
-| **SecureORM.EntityFrameworkCore** | EF Core integration — attributes, value converters, DI, query helpers. | [![NuGet](https://img.shields.io/nuget/v/SecureORM.EntityFrameworkCore.svg)](https://www.nuget.org/packages/SecureORM.EntityFrameworkCore) |
+Keep your key in a secure vault (Azure Key Vault, AWS KMS, HashiCorp Vault, etc.), separate from your database.
 
 ---
 
@@ -312,66 +529,52 @@ Without the client key, these are just meaningless digit strings.
 
 ```
 SecureORM/
-├── SecureORM.Core/                          # Core encoding engine (no EF dependency)
-│   └── Encoding/
-│       └── OPEEncoder.cs                    # The OPE algorithm
+├── SecureORM.Core/                          # Core encoding engine (zero dependencies)
+│   ├── Encoding/
+│   │   ├── OPEEncoder.cs                    # The OPE algorithm
+│   │   └── OpeColumnSizing.cs               # Column size calculators
+│   └── Normalization/
+│       ├── IInputNormalizer.cs               # Normalizer interface
+│       ├── UnicodeNormalizer.cs              # NFC + ASCII transliteration
+│       └── UnicodeNormalizerOptions.cs       # Normalizer config
 │
 ├── SecureORM.EntityFrameworkCore/           # EF Core integration
-│   ├── Attributes/
-│   │   ├── OpeEncodedAttribute.cs           # [OpeEncoded] for strings
-│   │   ├── OpeIntegerAttribute.cs           # [OpeInteger] for long/int
-│   │   └── OpeDecimalAttribute.cs           # [OpeDecimal(fw)] for decimals
-│   ├── Converters/
-│   │   ├── OpeStringValueConverter.cs       # ValueConverter<string, string>
-│   │   ├── OpeIntegerValueConverter.cs      # ValueConverter<long, string>
-│   │   └── OpeDecimalValueConverter.cs      # ValueConverter<decimal, string>
-│   ├── Configuration/
-│   │   ├── OpeEncodingOptions.cs            # ClientKey, NumberPadWidth config
-│   │   └── OpeEncoderFactory.cs             # Singleton factory for OPEEncoder
-│   ├── Extensions/
-│   │   ├── ServiceCollectionExtensions.cs   # AddSecureOrm() for DI
-│   │   ├── ModelBuilderExtensions.cs        # ApplyOpeEncodings() attribute scanner
-│   │   └── PropertyBuilderExtensions.cs     # HasOpeEncoding() fluent API
-│   └── OpeQueryHelper.cs                    # Pre-encode helpers for queries
+│   ├── Attributes/                          # [OpeEncoded], [OpeInteger], [OpeDecimal]
+│   ├── Converters/                          # ValueConverters for all supported types
+│   ├── Configuration/                       # OpeEncodingOptions, OpeEncoderFactory
+│   ├── Extensions/                          # DI, ModelBuilder, PropertyBuilder, DbContextOptions
+│   ├── Linq/                                # OpeStartsWith/OpeInRange LINQ translator
+│   ├── Migration/                           # OpeKeyRotator for key rotation
+│   └── OpeQueryHelper.cs                    # Pre-encode helpers for raw SQL queries
 │
-└── SecureORM.Tests/                         # Integration tests
-    └── OpeIntegrationTests.cs               # 14 tests with SQLite in-memory
+├── SecureORM.Dapper/                        # Dapper integration
+│   ├── Types/                               # OpeString, OpeInt64, OpeDecimalValue wrappers
+│   ├── Handlers/                            # SqlMapper.TypeHandler implementations
+│   ├── Extensions/                          # AddSecureOrmDapper() registration
+│   └── OpeQueryBuilder.cs                   # Dapper query parameter encoder
+│
+├── SecureORM.AspNetCore/                    # Multi-tenant middleware
+│   ├── Tenancy/                             # ITenantKeyResolver + Header/Claim/Route/Composite
+│   ├── Middleware/                           # OpeMultiTenantMiddleware
+│   ├── Configuration/                       # MultiTenantOpeOptions
+│   └── Extensions/                          # AddSecureOrmMultiTenant(), UseSecureOrmMultiTenant()
+│
+├── SecureORM.Benchmarks/                    # BenchmarkDotNet performance tests
+│   ├── EncodeBenchmarks.cs                  # Encode/decode throughput
+│   ├── QueryBenchmarks.cs                   # Query performance (encoded vs plaintext)
+│   └── BulkInsertBenchmarks.cs              # Bulk insert overhead measurement
+│
+└── SecureORM.Tests/                         # 46 integration tests (xunit + SQLite)
 ```
-
----
-
-## Supported Data Types
-
-| Attribute | .NET Type | DB Column | Encoding |
-|---|---|---|---|
-| `[OpeEncoded]` | `string` | `TEXT` / `NVARCHAR` | Each character becomes a 6-digit code |
-| `[OpeInteger]` | `long` | `TEXT` / `NVARCHAR` | Zero-padded, then character-encoded |
-| `[OpeDecimal(n)]` | `decimal` | `TEXT` / `NVARCHAR` | Scaled by 10^n, zero-padded, then character-encoded |
-
-### Character Support
-
-The encoder supports 95 printable ASCII characters:
-- Space
-- Punctuation: `` !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ``
-- Digits: `0-9`
-- Uppercase: `A-Z`
-- Lowercase: `a-z`
-
-Characters outside this set (Unicode, accented characters, etc.) will throw at encoding time. Normalize your input before encoding.
-
-### Number Limits
-
-- **Integers:** Up to `numberPadWidth` digits (default 12, max 18). Supports 0 to 999,999,999,999 with default settings.
-- **Decimals:** Integer part up to `numberPadWidth` digits + `fractionalWidth` decimal places.
-- **Negative numbers:** Not supported in the current version. Apply a domain shift (e.g., `value + offset`) before encoding if needed.
 
 ---
 
 ## Requirements
 
 - .NET 8.0+
-- Entity Framework Core 8.0+
-- Any EF Core database provider (SQL Server, PostgreSQL, SQLite, MySQL, etc.)
+- Entity Framework Core 8.0+ (for `SecureORM.EntityFrameworkCore`)
+- Dapper 2.1+ (for `SecureORM.Dapper`)
+- ASP.NET Core 8.0+ (for `SecureORM.AspNetCore`)
 
 ---
 
@@ -381,55 +584,43 @@ Characters outside this set (Unicode, accented characters, etc.) will throw at e
 dotnet test
 ```
 
-The test suite includes 14 integration tests using SQLite in-memory:
+46 integration tests covering:
+- Round-trip encoding/decoding for all 7 data types
+- Negative number ordering and range queries
+- Unicode normalization and transliteration
+- Exact match, ORDER BY, prefix, and range queries via EF Core
+- Key rotation with batch processing
+- Dapper type handler round-trips
+- Column size calculation accuracy
+- Cross-key isolation and stored value verification
 
-- Round-trip encoding/decoding for all types
-- Exact match queries via LINQ
-- ORDER BY correctness for strings, integers, and decimals
-- Prefix search with LIKE
-- Range queries with BETWEEN
-- Verification that stored values are encoded (not plaintext)
-- Cross-key isolation
-- Update operations
+## Running Benchmarks
 
----
-
-## Roadmap
-
-- [x] NuGet packages published
-- [ ] Negative number support
-- [ ] Unicode / normalization layer
-- [ ] Custom `IMethodCallTranslator` for native LINQ prefix/range queries (no raw SQL needed)
-- [ ] Column size recommendations based on max input length
-- [ ] Key rotation support
-- [ ] Benchmarks and performance profiling
-- [ ] Additional ORM support (Dapper extensions)
-- [ ] `int`, `short`, `float`, `double` property type support
-- [ ] Multi-tenant ASP.NET Core middleware (key per request context)
+```bash
+dotnet run -c Release --project SecureORM.Benchmarks
+```
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Here are some areas where the community can help:
+Contributions are welcome! Here are areas where the community can help:
 
-**Core improvements:**
-- Stronger key derivation (HKDF, per-position variation instead of global offset)
-- Negative number support
-- Unicode normalization layer
+**Core:**
+- Stronger key derivation (HKDF, per-position variation)
 - Configurable character universe
+- Additional normalization strategies
 
-**EF Core integration:**
-- Custom `IMethodCallTranslator` plugins for SQL Server, PostgreSQL, and SQLite so that prefix and range queries work with native LINQ instead of `FromSqlRaw`
-- Support for `int`, `short`, `float`, `double` property types
-- Nullable property handling improvements
+**EF Core:**
+- Provider-specific LINQ translator optimizations (SQL Server, PostgreSQL)
+- Nullable property edge cases
 - Migration-friendly column type detection
 
 **Ecosystem:**
-- Dapper extensions
 - NHibernate extensions
-- ASP.NET Core middleware for automatic key injection from request context (multi-tenant)
-- Benchmarks comparing query performance on encoded vs. plaintext columns
+- MongoDB integration
+- Admin dashboard for key management
+- Performance optimization for large batch operations
 
 ### Development Setup
 
@@ -452,4 +643,4 @@ dotnet test
 ## Acknowledgments
 
 - Order-Preserving Encryption concept based on research by [Boldyreva et al.](https://link.springer.com/chapter/10.1007/978-3-642-01001-9_13)
-- Built with [Entity Framework Core](https://github.com/dotnet/efcore)
+- Built with [Entity Framework Core](https://github.com/dotnet/efcore) and [Dapper](https://github.com/DapperLib/Dapper)

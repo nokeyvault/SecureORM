@@ -1,0 +1,17 @@
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\bin\Release\net8.0\SecureORM.AspNetCore.deps.json
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\bin\Release\net8.0\SecureORM.AspNetCore.dll
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\bin\Release\net8.0\SecureORM.AspNetCore.pdb
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\bin\Release\net8.0\SecureORM.Core.dll
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\bin\Release\net8.0\SecureORM.Core.pdb
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\bin\Release\net8.0\SecureORM.Core.xml
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\SecureORM.AspNetCore.csproj.AssemblyReference.cache
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\SecureORM.AspNetCore.GeneratedMSBuildEditorConfig.editorconfig
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\SecureORM.AspNetCore.AssemblyInfoInputs.cache
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\SecureORM.AspNetCore.AssemblyInfo.cs
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\SecureORM.AspNetCore.csproj.CoreCompileInputs.cache
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\SecureORM.AspNetCore.sourcelink.json
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\SecureOR.06593E5B.Up2Date
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\SecureORM.AspNetCore.dll
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\refint\SecureORM.AspNetCore.dll
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\SecureORM.AspNetCore.pdb
+D:\Personal\Projects\SecureORM\SecureORM.AspNetCore\obj\Release\net8.0\ref\SecureORM.AspNetCore.dll

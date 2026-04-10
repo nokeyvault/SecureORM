@@ -16,38 +16,109 @@
             order-preserving encoded string in the database column.
             </summary>
         </member>
+        <member name="P:SecureORM.EntityFrameworkCore.Attributes.OpeEncodedAttribute.MaxLength">
+            <summary>
+            Maximum plaintext length. When set, the database column is sized to
+            MaxLength * 6 characters. Set to 0 (default) for unspecified.
+            </summary>
+        </member>
         <member name="T:SecureORM.EntityFrameworkCore.Attributes.OpeIntegerAttribute">
             <summary>
             Marks a long/int property for OPE encoding. The numeric value is
             zero-padded and stored as an order-preserving encoded string.
             </summary>
         </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Extensions.DbContextOptionsBuilderExtensions.UseSecureOrmTranslations(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder,SecureORM.Core.Encoding.OPEEncoder)">
+            <summary>
+            Registers the OPE LINQ query translator so that OpeStartsWith() and
+            OpeInRange() methods are translated to native SQL.
+            </summary>
+        </member>
         <member name="M:SecureORM.EntityFrameworkCore.Extensions.ModelBuilderExtensions.ApplyOpeEncodings(Microsoft.EntityFrameworkCore.ModelBuilder,SecureORM.Core.Encoding.OPEEncoder)">
             <summary>
             Scans all registered entity types for [OpeEncoded], [OpeInteger], and
             [OpeDecimal] attributes and wires up the appropriate value converters.
+            Supports string, long, int, short, decimal, float, and double property types.
             Call this in OnModelCreating.
-            </summary>
-        </member>
-        <member name="M:SecureORM.EntityFrameworkCore.Extensions.PropertyBuilderExtensions.HasOpeEncoding(Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder{System.String},SecureORM.Core.Encoding.OPEEncoder)">
-            <summary>
-            Configures the string property for OPE encoding (fluent API alternative to [OpeEncoded]).
-            </summary>
-        </member>
-        <member name="M:SecureORM.EntityFrameworkCore.Extensions.PropertyBuilderExtensions.HasOpeIntegerEncoding(Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder{System.Int64},SecureORM.Core.Encoding.OPEEncoder)">
-            <summary>
-            Configures the long property for OPE integer encoding (fluent API alternative to [OpeInteger]).
-            </summary>
-        </member>
-        <member name="M:SecureORM.EntityFrameworkCore.Extensions.PropertyBuilderExtensions.HasOpeDecimalEncoding(Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder{System.Decimal},SecureORM.Core.Encoding.OPEEncoder,System.Int32)">
-            <summary>
-            Configures the decimal property for OPE decimal encoding (fluent API alternative to [OpeDecimal]).
             </summary>
         </member>
         <member name="M:SecureORM.EntityFrameworkCore.Extensions.ServiceCollectionExtensions.AddSecureOrm(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SecureORM.EntityFrameworkCore.Configuration.OpeEncodingOptions})">
             <summary>
             Registers the OPE encoding services (OpeEncoderFactory, OPEEncoder, OpeQueryHelper).
             </summary>
+        </member>
+        <member name="T:SecureORM.EntityFrameworkCore.Linq.OpeDbContextOptionsExtension">
+            <summary>
+            EF Core options extension that registers the OPE LINQ method call translator.
+            </summary>
+        </member>
+        <member name="T:SecureORM.EntityFrameworkCore.Linq.OpeMethodCallTranslator">
+            <summary>
+            Translates OpeQueryExtensions marker methods into SQL expressions.
+            </summary>
+        </member>
+        <member name="T:SecureORM.EntityFrameworkCore.Linq.OpeQueryExtensions">
+            <summary>
+            LINQ marker methods for OPE queries. These translate to SQL via the
+            OPE IMethodCallTranslator — they throw if called directly in C#.
+            Register with UseSecureOrmTranslations() on DbContextOptionsBuilder.
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Linq.OpeQueryExtensions.OpeStartsWith(System.String,System.String)">
+            <summary>
+            Translates to SQL: WHERE column LIKE 'encoded_prefix%'
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Linq.OpeQueryExtensions.OpeInRange(System.String,System.String,System.String)">
+            <summary>
+            Translates to SQL: WHERE column >= encoded_low AND column &lt;= encoded_high
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Linq.OpeQueryExtensions.OpeInRange(System.Int64,System.Int64,System.Int64)">
+            <summary>
+            Translates to SQL: WHERE column >= encoded_low AND column &lt;= encoded_high
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Linq.OpeQueryExtensions.OpeInRange(System.Decimal,System.Decimal,System.Decimal)">
+            <summary>
+            Translates to SQL: WHERE column >= encoded_low AND column &lt;= encoded_high
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Linq.OpeQueryExtensions.OpeInRange(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Translates to SQL: WHERE column >= encoded_low AND column &lt;= encoded_high
+            </summary>
+        </member>
+        <member name="T:SecureORM.EntityFrameworkCore.Migration.KeyRotationProgress">
+            <summary>Reports progress during key rotation.</summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Migration.KeyRotationProgress.#ctor(System.Int32,System.Int32)">
+            <summary>Reports progress during key rotation.</summary>
+        </member>
+        <member name="T:SecureORM.EntityFrameworkCore.Migration.OpeKeyRotator">
+            <summary>
+            Re-encodes all OPE-encoded data from one key to another.
+            Operates in batches within a transaction for safety.
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Migration.OpeKeyRotator.ReEncodeAllAsync``1(Microsoft.EntityFrameworkCore.DbContext,SecureORM.Core.Encoding.OPEEncoder,SecureORM.Core.Encoding.OPEEncoder,System.Collections.Generic.Dictionary{System.String,SecureORM.EntityFrameworkCore.Migration.ColumnEncodingType},System.Int32,System.IProgress{SecureORM.EntityFrameworkCore.Migration.KeyRotationProgress},System.Threading.CancellationToken)">
+            <summary>
+            Re-encodes all rows in a table, decoding with the old encoder
+            and re-encoding with the new encoder.
+            </summary>
+            <typeparam name="TEntity">The entity type.</typeparam>
+            <param name="context">The DbContext with an open connection.</param>
+            <param name="oldEncoder">Encoder initialized with the old key.</param>
+            <param name="newEncoder">Encoder initialized with the new key.</param>
+            <param name="columnMappings">
+            Column names and their encoding types. Key = column name, Value = encoding type.
+            </param>
+            <param name="batchSize">Number of rows per batch (default 1000).</param>
+            <param name="progress">Optional progress reporter.</param>
+            <param name="cancellationToken">Cancellation token.</param>
+        </member>
+        <member name="T:SecureORM.EntityFrameworkCore.Migration.ColumnEncodingType">
+            <summary>Encoding type for a column, used during key rotation.</summary>
         </member>
         <member name="T:SecureORM.EntityFrameworkCore.OpeQueryHelper">
             <summary>

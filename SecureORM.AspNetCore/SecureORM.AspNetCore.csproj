@@ -6,13 +6,15 @@
     <Nullable>enable</Nullable>
     <RootNamespace>SecureORM.AspNetCore</RootNamespace>
     <PackageId>SecureORM.AspNetCore</PackageId>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Authors>NoKeyVault</Authors>
-    <Description>ASP.NET Core multi-tenant middleware for SecureORM. Resolves per-tenant encryption keys from HTTP context for automatic per-request OPE encoding.</Description>
+    <Description>ASP.NET Core multi-tenant middleware for SecureORM. Resolves per-tenant encryption keys from HTTP headers, JWT claims, or route data for automatic per-request OPE encoding.</Description>
     <PackageTags>aspnetcore;multi-tenant;encryption;encoding;ope;middleware</PackageTags>
     <PackageProjectUrl>https://github.com/nokeyvault/SecureORM</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nokeyvault/SecureORM.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +23,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SecureORM.Core\SecureORM.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

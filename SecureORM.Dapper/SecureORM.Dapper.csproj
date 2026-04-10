@@ -6,13 +6,15 @@
     <Nullable>enable</Nullable>
     <RootNamespace>SecureORM.Dapper</RootNamespace>
     <PackageId>SecureORM.Dapper</PackageId>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Authors>NoKeyVault</Authors>
-    <Description>Dapper integration for SecureORM. Provides type handlers and query helpers for order-preserving encoded data with Dapper.</Description>
+    <Description>Dapper integration for SecureORM. Provides OpeString, OpeInt64, OpeDecimalValue wrapper types with automatic type handlers and query helpers for order-preserving encoded data.</Description>
     <PackageTags>dapper;encryption;encoding;ope;order-preserving;security;database</PackageTags>
     <PackageProjectUrl>https://github.com/nokeyvault/SecureORM</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nokeyvault/SecureORM.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +23,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SecureORM.Core\SecureORM.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "SecureORM.AspNetCore/2.0.0": {
+        "dependencies": {
+          "SecureORM.Core": "2.0.0"
+        },
+        "runtime": {
+          "SecureORM.AspNetCore.dll": {}
+        }
+      },
+      "SecureORM.Core/2.0.0": {
+        "runtime": {
+          "SecureORM.Core.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SecureORM.AspNetCore/2.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SecureORM.Core/2.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

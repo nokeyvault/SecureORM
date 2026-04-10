@@ -8,9 +8,9 @@
 
     <!-- NuGet Package Metadata -->
     <PackageId>SecureORM.Core</PackageId>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Authors>NoKeyVault</Authors>
-    <Description>Order-Preserving Encoding (OPE) engine for SecureORM. Encodes strings, integers, and decimals into fixed-width numeric tokens while preserving sort order. Use as a standalone encoder or with SecureORM.EntityFrameworkCore for transparent EF Core integration.</Description>
+    <Description>Order-Preserving Encoding (OPE) engine for SecureORM. Encodes strings, integers, and decimals into fixed-width numeric tokens while preserving sort order. Supports negative numbers, Unicode normalization, and column sizing. Use standalone or with SecureORM.EntityFrameworkCore, SecureORM.Dapper, or SecureORM.AspNetCore.</Description>
     <PackageTags>encryption;encoding;ope;order-preserving;security;database;query</PackageTags>
     <PackageProjectUrl>https://github.com/nokeyvault/SecureORM</PackageProjectUrl>
     <RepositoryUrl>https://github.com/nokeyvault/SecureORM.git</RepositoryUrl>

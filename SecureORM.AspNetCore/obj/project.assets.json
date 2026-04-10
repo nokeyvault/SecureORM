@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net8.0": {
-      "SecureORM.Core/1.0.0": {
+      "SecureORM.Core/2.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "compile": {
@@ -15,7 +15,7 @@
     }
   },
   "libraries": {
-    "SecureORM.Core/1.0.0": {
+    "SecureORM.Core/2.0.0": {
       "type": "project",
       "path": "../SecureORM.Core/SecureORM.Core.csproj",
       "msbuildProject": "../SecureORM.Core/SecureORM.Core.csproj"
@@ -23,7 +23,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "SecureORM.Core >= 1.0.0"
+      "SecureORM.Core >= 2.0.0"
     ]
   },
   "packageFolders": {
@@ -31,7 +31,7 @@
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "2.0.0",
     "restore": {
       "projectUniqueName": "D:\\Personal\\Projects\\SecureORM\\SecureORM.AspNetCore\\SecureORM.AspNetCore.csproj",
       "projectName": "SecureORM.AspNetCore",

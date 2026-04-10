@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>SecureORM.Core</id>
+    <version>2.0.0</version>
+    <authors>NoKeyVault</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/nokeyvault/SecureORM</projectUrl>
+    <description>Order-Preserving Encoding (OPE) engine for SecureORM. Encodes strings, integers, and decimals into fixed-width numeric tokens while preserving sort order. Supports negative numbers, Unicode normalization, and column sizing. Use standalone or with SecureORM.EntityFrameworkCore, SecureORM.Dapper, or SecureORM.AspNetCore.</description>
+    <tags>encryption encoding ope order-preserving security database query</tags>
+    <repository type="git" url="https://github.com/nokeyvault/SecureORM.git" commit="37af5c5ab15162ab829005d702e1f35fc15d938b" />
+    <dependencies>
+      <group targetFramework="net8.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="D:\Personal\Projects\SecureORM\SecureORM.Core\bin\Release\net8.0\SecureORM.Core.dll" target="lib\net8.0\SecureORM.Core.dll" />
+    <file src="D:\Personal\Projects\SecureORM\SecureORM.Core\bin\Release\net8.0\SecureORM.Core.xml" target="lib\net8.0\SecureORM.Core.xml" />
+    <file src="D:\Personal\Projects\SecureORM\README.md" target="\README.md" />
+  </files>
+</package>
