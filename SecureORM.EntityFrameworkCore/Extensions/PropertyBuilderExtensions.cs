@@ -7,9 +7,8 @@ namespace SecureORM.EntityFrameworkCore.Extensions;
 
 public static class PropertyBuilderExtensions
 {
-    /// <summary>
-    /// Configures the string property for OPE encoding (fluent API alternative to [OpeEncoded]).
-    /// </summary>
+    // ─── String ────────────────────────────────────────────────────────
+
     public static PropertyBuilder<string> HasOpeEncoding(
         this PropertyBuilder<string> builder, OPEEncoder encoder)
     {
@@ -18,9 +17,8 @@ public static class PropertyBuilderExtensions
         return builder;
     }
 
-    /// <summary>
-    /// Configures the long property for OPE integer encoding (fluent API alternative to [OpeInteger]).
-    /// </summary>
+    // ─── Integer types ─────────────────────────────────────────────────
+
     public static PropertyBuilder<long> HasOpeIntegerEncoding(
         this PropertyBuilder<long> builder, OPEEncoder encoder)
     {
@@ -29,13 +27,44 @@ public static class PropertyBuilderExtensions
         return builder;
     }
 
-    /// <summary>
-    /// Configures the decimal property for OPE decimal encoding (fluent API alternative to [OpeDecimal]).
-    /// </summary>
+    public static PropertyBuilder<int> HasOpeIntegerEncoding(
+        this PropertyBuilder<int> builder, OPEEncoder encoder)
+    {
+        builder.HasConversion(new OpeInt32ValueConverter(encoder));
+        builder.HasColumnType("TEXT");
+        return builder;
+    }
+
+    public static PropertyBuilder<short> HasOpeIntegerEncoding(
+        this PropertyBuilder<short> builder, OPEEncoder encoder)
+    {
+        builder.HasConversion(new OpeInt16ValueConverter(encoder));
+        builder.HasColumnType("TEXT");
+        return builder;
+    }
+
+    // ─── Decimal types ─────────────────────────────────────────────────
+
     public static PropertyBuilder<decimal> HasOpeDecimalEncoding(
         this PropertyBuilder<decimal> builder, OPEEncoder encoder, int fractionalWidth = 6)
     {
         builder.HasConversion(new OpeDecimalValueConverter(encoder, fractionalWidth));
+        builder.HasColumnType("TEXT");
+        return builder;
+    }
+
+    public static PropertyBuilder<float> HasOpeDecimalEncoding(
+        this PropertyBuilder<float> builder, OPEEncoder encoder, int fractionalWidth = 6)
+    {
+        builder.HasConversion(new OpeFloatValueConverter(encoder, fractionalWidth));
+        builder.HasColumnType("TEXT");
+        return builder;
+    }
+
+    public static PropertyBuilder<double> HasOpeDecimalEncoding(
+        this PropertyBuilder<double> builder, OPEEncoder encoder, int fractionalWidth = 6)
+    {
+        builder.HasConversion(new OpeDoubleValueConverter(encoder, fractionalWidth));
         builder.HasColumnType("TEXT");
         return builder;
     }

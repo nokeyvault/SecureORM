@@ -8,14 +8,24 @@
     ".NETCoreApp,Version=v8.0": {
       "SecureORM.Tests/1.0.0": {
         "dependencies": {
+          "Dapper": "2.1.24",
           "Microsoft.EntityFrameworkCore.Sqlite": "8.0.0",
           "Microsoft.NET.Test.Sdk": "17.8.0",
           "SecureORM.Core": "1.0.0",
+          "SecureORM.Dapper": "1.0.0",
           "SecureORM.EntityFrameworkCore": "1.0.0",
           "xunit": "2.6.2"
         },
         "runtime": {
           "SecureORM.Tests.dll": {}
+        }
+      },
+      "Dapper/2.1.24": {
+        "runtime": {
+          "lib/net7.0/Dapper.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.1.24.50284"
+          }
         }
       },
       "Microsoft.CodeCoverage/17.8.0": {
@@ -658,6 +668,18 @@
           }
         }
       },
+      "SecureORM.Dapper/1.0.0": {
+        "dependencies": {
+          "Dapper": "2.1.24",
+          "SecureORM.Core": "1.0.0"
+        },
+        "runtime": {
+          "SecureORM.Dapper.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "SecureORM.EntityFrameworkCore/1.0.0": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "8.0.0",
@@ -679,6 +701,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Dapper/2.1.24": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/2t2vsdJyZRsk13AsWigZpsuFvEwK+o3v862cEULXoww905gyKhJFSuwmZI/4Ui9COX9ZCFCI09UHyH4wVYl3A==",
+      "path": "dapper/2.1.24",
+      "hashPath": "dapper.2.1.24.nupkg.sha512"
     },
     "Microsoft.CodeCoverage/17.8.0": {
       "type": "package",
@@ -905,6 +934,11 @@
       "hashPath": "xunit.extensibility.execution.2.6.2.nupkg.sha512"
     },
     "SecureORM.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SecureORM.Dapper/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

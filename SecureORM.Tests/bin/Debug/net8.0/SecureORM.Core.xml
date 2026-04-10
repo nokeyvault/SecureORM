@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SecureORM.Core</name>
+    </assembly>
+    <members>
+        <member name="T:SecureORM.Core.Encoding.OpeColumnSizing">
+            <summary>
+            Provides column size calculations for OPE-encoded values.
+            Use these to configure database column lengths (e.g., nvarchar(N)).
+            </summary>
+        </member>
+        <member name="F:SecureORM.Core.Encoding.OpeColumnSizing.CodeWidth">
+            <summary>Width of each encoded character token (6 digits).</summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OpeColumnSizing.EncodedStringLength(System.Int32)">
+            <summary>
+            Calculates the encoded string length for a given maximum plaintext length.
+            Example: MaxLength=100 → EncodedLength=600.
+            </summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OpeColumnSizing.EncodedIntegerLength(System.Int32,System.Boolean)">
+            <summary>
+            Calculates the encoded integer column length.
+            </summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OpeColumnSizing.EncodedDecimalLength(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Calculates the encoded decimal column length.
+            </summary>
+        </member>
+        <member name="T:SecureORM.Core.Encoding.OPEEncoder">
+             <summary>
+             Order-Preserving Encoder (OPE)
+            
+             Every character in the supported universe maps to a fixed-width numeric code.
+             Codes are assigned in strict ascending order — smaller input always produces
+             a smaller code, guaranteeing database-level ORDER BY, range queries, and
+             prefix LIKE queries work correctly on the encoded ciphertext without decryption.
+            
+             A client-supplied key derives a deterministic visual offset that shifts
+             all codes by a key-specific amount.
+             </summary>
+        </member>
+        <member name="F:SecureORM.Core.Encoding.OPEEncoder.CODE_WIDTH">
+            <summary>Width of each encoded token in decimal digits.</summary>
+        </member>
+        <member name="F:SecureORM.Core.Encoding.OPEEncoder.DEFAULT_NUMBER_PAD_WIDTH">
+            <summary>Default maximum digit width for numeric values (supports up to 999,999,999,999).</summary>
+        </member>
+        <member name="P:SecureORM.Core.Encoding.OPEEncoder.SupportsNegatives">
+            <summary>Whether this encoder supports negative numbers.</summary>
+        </member>
+        <member name="P:SecureORM.Core.Encoding.OPEEncoder.NumberPadWidth">
+            <summary>The configured number pad width.</summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.#ctor(System.String,System.Int32,System.Boolean,SecureORM.Core.Normalization.IInputNormalizer)">
+            <summary>
+            Initialise the encoder for a specific client.
+            </summary>
+            <param name="clientKey">A secret string unique to this client/tenant.</param>
+            <param name="numberPadWidth">Maximum digit width for numeric columns (1-18).</param>
+            <param name="supportNegatives">
+            When true, negative integers and decimals are supported via a sign-prefix scheme.
+            Encoded data is NOT compatible between supportNegatives=true and false.
+            </param>
+            <param name="normalizer">Optional input normalizer for Unicode handling.</param>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.EncodeString(System.String)">
+            <summary>
+            Encodes a string value. The resulting ciphertext sorts lexicographically
+            in the same order as the original plaintext.
+            </summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.DecodeString(System.String)">
+            <summary>Decodes a string ciphertext back to its plaintext.</summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.EncodeInteger(System.Int64)">
+            <summary>
+            Encodes an integer value. When supportNegatives is enabled, negative values
+            use a sign-prefix + nines' complement scheme to preserve sort order.
+            </summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.DecodeInteger(System.String)">
+            <summary>Decodes an integer ciphertext back to its long value.</summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.EncodeDecimal(System.Decimal,System.Int32)">
+            <summary>
+            Encodes a decimal/float value. When supportNegatives is enabled,
+            negative values are supported with preserved sort order.
+            </summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.DecodeDecimal(System.String,System.Int32)">
+            <summary>Decodes a decimal ciphertext.</summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.EncodePrefix(System.String)">
+            <summary>Returns the encoded prefix for a SQL LIKE '{prefix}%' query.</summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.EncodeStringRange(System.String,System.String)">
+            <summary>Returns encoded bounds for a SQL BETWEEN query on a string column.</summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.EncodeIntegerRange(System.Int64,System.Int64)">
+            <summary>Returns encoded bounds for a SQL BETWEEN query on an integer column.</summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.EncodeDecimalRange(System.Decimal,System.Decimal,System.Int32)">
+            <summary>Returns encoded bounds for a SQL BETWEEN query on a decimal column.</summary>
+        </member>
+        <member name="M:SecureORM.Core.Encoding.OPEEncoder.GetEncodingTableUnsafe">
+            <summary>Returns the full encoding table for inspection / debugging.</summary>
+        </member>
+        <member name="P:SecureORM.Core.Encoding.OPEEncoder.UniverseSize">
+            <summary>Returns the number of characters in the supported universe.</summary>
+        </member>
+        <member name="T:SecureORM.Core.Normalization.IInputNormalizer">
+            <summary>
+            Normalizes input strings before OPE encoding. Implement this interface
+            to handle Unicode, accented characters, or custom transformations.
+            Note: Decoding returns the normalized form, not the original input.
+            </summary>
+        </member>
+        <member name="T:SecureORM.Core.Normalization.UnicodeNormalizer">
+            <summary>
+            Normalizes Unicode input to ASCII-safe strings suitable for OPE encoding.
+            Applies NFC normalization, optional transliteration, and optional lowercasing.
+            </summary>
+        </member>
+        <member name="P:SecureORM.Core.Normalization.UnicodeNormalizerOptions.NormalizationForm">
+            <summary>Unicode normalization form (default: NFC).</summary>
+        </member>
+        <member name="P:SecureORM.Core.Normalization.UnicodeNormalizerOptions.Transliterate">
+            <summary>When true, transliterate accented characters to ASCII equivalents.</summary>
+        </member>
+        <member name="P:SecureORM.Core.Normalization.UnicodeNormalizerOptions.ReplacementChar">
+            <summary>
+            Replacement character for characters that cannot be transliterated.
+            Set to null to throw on untransliterable characters.
+            </summary>
+        </member>
+        <member name="P:SecureORM.Core.Normalization.UnicodeNormalizerOptions.ToLowerCase">
+            <summary>When true, convert all characters to lowercase before encoding.</summary>
+        </member>
+    </members>
+</doc>

@@ -12,11 +12,13 @@
     <PackageReference Include="xunit" Version="2.6.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Dapper" Version="2.1.24" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SecureORM.Core\SecureORM.Core.csproj" />
     <ProjectReference Include="..\SecureORM.EntityFrameworkCore\SecureORM.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\SecureORM.Dapper\SecureORM.Dapper.csproj" />
   </ItemGroup>
 
 </Project>

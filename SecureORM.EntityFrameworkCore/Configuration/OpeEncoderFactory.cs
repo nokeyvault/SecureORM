@@ -12,7 +12,11 @@ public class OpeEncoderFactory
             throw new InvalidOperationException(
                 "OPE client key is not configured. Call AddSecureOrm(o => o.ClientKey = \"...\").");
 
-        _encoder = new OPEEncoder(options.ClientKey, options.NumberPadWidth);
+        _encoder = new OPEEncoder(
+            options.ClientKey,
+            options.NumberPadWidth,
+            options.SupportNegatives,
+            options.Normalizer);
     }
 
     public OPEEncoder Encoder => _encoder;

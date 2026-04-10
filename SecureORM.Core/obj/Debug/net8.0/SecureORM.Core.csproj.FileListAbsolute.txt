@@ -9,3 +9,17 @@ D:\Personal\Projects\nokeyvault\src\SecureORM.Core\obj\Debug\net8.0\SecureORM.Co
 D:\Personal\Projects\nokeyvault\src\SecureORM.Core\obj\Debug\net8.0\refint\SecureORM.Core.dll
 D:\Personal\Projects\nokeyvault\src\SecureORM.Core\obj\Debug\net8.0\SecureORM.Core.pdb
 D:\Personal\Projects\nokeyvault\src\SecureORM.Core\obj\Debug\net8.0\ref\SecureORM.Core.dll
+D:\Personal\Projects\SecureORM\SecureORM.Core\bin\Debug\net8.0\SecureORM.Core.deps.json
+D:\Personal\Projects\SecureORM\SecureORM.Core\bin\Debug\net8.0\SecureORM.Core.dll
+D:\Personal\Projects\SecureORM\SecureORM.Core\bin\Debug\net8.0\SecureORM.Core.pdb
+D:\Personal\Projects\SecureORM\SecureORM.Core\bin\Debug\net8.0\SecureORM.Core.xml
+D:\Personal\Projects\SecureORM\SecureORM.Core\obj\Debug\net8.0\SecureORM.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Personal\Projects\SecureORM\SecureORM.Core\obj\Debug\net8.0\SecureORM.Core.AssemblyInfoInputs.cache
+D:\Personal\Projects\SecureORM\SecureORM.Core\obj\Debug\net8.0\SecureORM.Core.AssemblyInfo.cs
+D:\Personal\Projects\SecureORM\SecureORM.Core\obj\Debug\net8.0\SecureORM.Core.csproj.CoreCompileInputs.cache
+D:\Personal\Projects\SecureORM\SecureORM.Core\obj\Debug\net8.0\SecureORM.Core.sourcelink.json
+D:\Personal\Projects\SecureORM\SecureORM.Core\obj\Debug\net8.0\SecureORM.Core.dll
+D:\Personal\Projects\SecureORM\SecureORM.Core\obj\Debug\net8.0\refint\SecureORM.Core.dll
+D:\Personal\Projects\SecureORM\SecureORM.Core\obj\Debug\net8.0\SecureORM.Core.xml
+D:\Personal\Projects\SecureORM\SecureORM.Core\obj\Debug\net8.0\SecureORM.Core.pdb
+D:\Personal\Projects\SecureORM\SecureORM.Core\obj\Debug\net8.0\ref\SecureORM.Core.dll

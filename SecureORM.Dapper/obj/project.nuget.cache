@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "wlH4KMle4BQ=",
+  "success": true,
+  "projectFilePath": "D:\\Personal\\Projects\\SecureORM\\SecureORM.Dapper\\SecureORM.Dapper.csproj",
+  "expectedPackageFiles": [
+    "D:\\NuGetPackage\\Packages\\dapper\\2.1.24\\dapper.2.1.24.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,17 @@
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\bin\Debug\net8.0\SecureORM.Dapper.deps.json
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\bin\Debug\net8.0\SecureORM.Dapper.dll
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\bin\Debug\net8.0\SecureORM.Dapper.pdb
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\bin\Debug\net8.0\SecureORM.Core.dll
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\bin\Debug\net8.0\SecureORM.Core.pdb
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\bin\Debug\net8.0\SecureORM.Core.xml
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\SecureORM.Dapper.csproj.AssemblyReference.cache
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\SecureORM.Dapper.GeneratedMSBuildEditorConfig.editorconfig
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\SecureORM.Dapper.AssemblyInfoInputs.cache
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\SecureORM.Dapper.AssemblyInfo.cs
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\SecureORM.Dapper.csproj.CoreCompileInputs.cache
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\SecureORM.Dapper.sourcelink.json
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\SecureOR.50E6DDF4.Up2Date
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\SecureORM.Dapper.dll
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\refint\SecureORM.Dapper.dll
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\SecureORM.Dapper.pdb
+D:\Personal\Projects\SecureORM\SecureORM.Dapper\obj\Debug\net8.0\ref\SecureORM.Dapper.dll

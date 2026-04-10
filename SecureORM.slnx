@@ -1,5 +1,8 @@
 <Solution>
+  <Project Path="SecureORM.AspNetCore/SecureORM.AspNetCore.csproj" />
+  <Project Path="SecureORM.Benchmarks/SecureORM.Benchmarks.csproj" />
   <Project Path="SecureORM.Core/SecureORM.Core.csproj" />
+  <Project Path="SecureORM.Dapper/SecureORM.Dapper.csproj" />
   <Project Path="SecureORM.EntityFrameworkCore/SecureORM.EntityFrameworkCore.csproj" />
   <Project Path="SecureORM.Tests/SecureORM.Tests.csproj" />
 </Solution>
