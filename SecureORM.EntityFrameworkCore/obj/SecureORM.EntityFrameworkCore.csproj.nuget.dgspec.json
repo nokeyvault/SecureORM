@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.EntityFrameworkCore\\SecureORM.EntityFrameworkCore.csproj": {}
+    "D:\\Personal\\Projects\\SecureORM\\SecureORM.EntityFrameworkCore\\SecureORM.EntityFrameworkCore.csproj": {}
   },
   "projects": {
-    "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.Core\\SecureORM.Core.csproj": {
+    "D:\\Personal\\Projects\\SecureORM\\SecureORM.Core\\SecureORM.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.Core\\SecureORM.Core.csproj",
+        "projectUniqueName": "D:\\Personal\\Projects\\SecureORM\\SecureORM.Core\\SecureORM.Core.csproj",
         "projectName": "SecureORM.Core",
-        "projectPath": "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.Core\\SecureORM.Core.csproj",
+        "projectPath": "D:\\Personal\\Projects\\SecureORM\\SecureORM.Core\\SecureORM.Core.csproj",
         "packagesPath": "D:\\NuGetPackage\\Packages",
-        "outputPath": "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.Core\\obj\\",
+        "outputPath": "D:\\Personal\\Projects\\SecureORM\\SecureORM.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -69,14 +69,14 @@
         }
       }
     },
-    "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.EntityFrameworkCore\\SecureORM.EntityFrameworkCore.csproj": {
+    "D:\\Personal\\Projects\\SecureORM\\SecureORM.EntityFrameworkCore\\SecureORM.EntityFrameworkCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.EntityFrameworkCore\\SecureORM.EntityFrameworkCore.csproj",
+        "projectUniqueName": "D:\\Personal\\Projects\\SecureORM\\SecureORM.EntityFrameworkCore\\SecureORM.EntityFrameworkCore.csproj",
         "projectName": "SecureORM.EntityFrameworkCore",
-        "projectPath": "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.EntityFrameworkCore\\SecureORM.EntityFrameworkCore.csproj",
+        "projectPath": "D:\\Personal\\Projects\\SecureORM\\SecureORM.EntityFrameworkCore\\SecureORM.EntityFrameworkCore.csproj",
         "packagesPath": "D:\\NuGetPackage\\Packages",
-        "outputPath": "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.EntityFrameworkCore\\obj\\",
+        "outputPath": "D:\\Personal\\Projects\\SecureORM\\SecureORM.EntityFrameworkCore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -97,8 +97,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.Core\\SecureORM.Core.csproj": {
-                "projectPath": "D:\\Personal\\Projects\\nokeyvault\\src\\SecureORM.Core\\SecureORM.Core.csproj"
+              "D:\\Personal\\Projects\\SecureORM\\SecureORM.Core\\SecureORM.Core.csproj": {
+                "projectPath": "D:\\Personal\\Projects\\SecureORM\\SecureORM.Core\\SecureORM.Core.csproj"
               }
             }
           }

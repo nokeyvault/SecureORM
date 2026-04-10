@@ -5,6 +5,19 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>SecureORM.EntityFrameworkCore</RootNamespace>
+
+    <!-- NuGet Package Metadata -->
+    <PackageId>SecureORM.EntityFrameworkCore</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>NoKeyVault</Authors>
+    <Description>Entity Framework Core extensions for SecureORM. Transparent order-preserving encoding via attributes and value converters. Query encrypted data with ORDER BY, exact match, prefix search, and range queries — without decryption.</Description>
+    <PackageTags>efcore;entity-framework;encryption;encoding;ope;order-preserving;security;database;query;orm</PackageTags>
+    <PackageProjectUrl>https://github.com/nokeyvault/SecureORM</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/nokeyvault/SecureORM.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +28,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SecureORM.Core\SecureORM.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

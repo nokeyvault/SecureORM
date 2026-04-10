@@ -1,5 +1,10 @@
 # SecureORM
 
+[![NuGet](https://img.shields.io/nuget/v/SecureORM.Core.svg?label=SecureORM.Core)](https://www.nuget.org/packages/SecureORM.Core)
+[![NuGet](https://img.shields.io/nuget/v/SecureORM.EntityFrameworkCore.svg?label=SecureORM.EntityFrameworkCore)](https://www.nuget.org/packages/SecureORM.EntityFrameworkCore)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![.NET](https://img.shields.io/badge/.NET-8.0%2B-blue.svg)](https://dotnet.microsoft.com/)
+
 **Order-Preserving Encoding (OPE) extensions for Entity Framework Core.**
 
 SecureORM lets you store encoded data in your database that is completely useless without your secret key — while still supporting `ORDER BY`, exact match, range (`BETWEEN`), and prefix (`LIKE`) queries directly on the encoded columns. No decryption needed at the database layer.
@@ -47,17 +52,27 @@ Most encryption schemes (AES, etc.) destroy the ability to query data. You encry
 
 ---
 
-## Getting Started
-
-### 1. Install
+## Installation
 
 ```bash
-# From source (until NuGet package is published)
-dotnet add reference path/to/SecureORM.Core.csproj
-dotnet add reference path/to/SecureORM.EntityFrameworkCore.csproj
+dotnet add package SecureORM.Core
+dotnet add package SecureORM.EntityFrameworkCore
 ```
 
-### 2. Define Your Entity
+Or via the NuGet Package Manager:
+
+```powershell
+Install-Package SecureORM.Core
+Install-Package SecureORM.EntityFrameworkCore
+```
+
+> **Note:** `SecureORM.EntityFrameworkCore` depends on `SecureORM.Core` and will pull it in automatically. If you only need the standalone encoder without EF Core, install just `SecureORM.Core`.
+
+---
+
+## Quick Start
+
+### 1. Define Your Entity
 
 ```csharp
 using SecureORM.EntityFrameworkCore.Attributes;
@@ -80,7 +95,7 @@ public class User
 }
 ```
 
-### 3. Register Services
+### 2. Register Services
 
 ```csharp
 // Program.cs or Startup.cs
@@ -96,7 +111,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));  // or UseSqlite, UseNpgsql, etc.
 ```
 
-### 4. Configure DbContext
+### 3. Configure DbContext
 
 ```csharp
 using SecureORM.Core.Encoding;
@@ -218,6 +233,36 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 
 ---
 
+## Standalone Encoder (Without EF Core)
+
+If you only need the encoding engine without Entity Framework, install just `SecureORM.Core`:
+
+```csharp
+using SecureORM.Core.Encoding;
+
+var encoder = new OPEEncoder("your-secret-client-key");
+
+// Strings
+string encoded = encoder.EncodeString("alice");
+string decoded = encoder.DecodeString(encoded);  // "alice"
+
+// Integers
+string encodedAge = encoder.EncodeInteger(30);
+long decodedAge = encoder.DecodeInteger(encodedAge);  // 30
+
+// Decimals
+string encodedSalary = encoder.EncodeDecimal(55000.50m, fractionalWidth: 2);
+decimal decodedSalary = encoder.DecodeDecimal(encodedSalary, fractionalWidth: 2);  // 55000.50
+
+// Prefix for LIKE queries
+string prefix = encoder.EncodePrefix("ali");
+
+// Range bounds for BETWEEN queries
+var (low, high) = encoder.EncodeIntegerRange(20, 40);
+```
+
+---
+
 ## How It Works
 
 ### The Encoding Algorithm
@@ -254,10 +299,19 @@ Without the client key, these are just meaningless digit strings.
 
 ---
 
+## Packages
+
+| Package | Description | NuGet |
+|---|---|---|
+| **SecureORM.Core** | Standalone OPE encoding engine. No dependencies. | [![NuGet](https://img.shields.io/nuget/v/SecureORM.Core.svg)](https://www.nuget.org/packages/SecureORM.Core) |
+| **SecureORM.EntityFrameworkCore** | EF Core integration — attributes, value converters, DI, query helpers. | [![NuGet](https://img.shields.io/nuget/v/SecureORM.EntityFrameworkCore.svg)](https://www.nuget.org/packages/SecureORM.EntityFrameworkCore) |
+
+---
+
 ## Project Structure
 
 ```
-src/
+SecureORM/
 ├── SecureORM.Core/                          # Core encoding engine (no EF dependency)
 │   └── Encoding/
 │       └── OPEEncoder.cs                    # The OPE algorithm
@@ -278,7 +332,7 @@ src/
 │   │   ├── ServiceCollectionExtensions.cs   # AddSecureOrm() for DI
 │   │   ├── ModelBuilderExtensions.cs        # ApplyOpeEncodings() attribute scanner
 │   │   └── PropertyBuilderExtensions.cs     # HasOpeEncoding() fluent API
-│   └── OpeQueryHelper.cs                   # Pre-encode helpers for queries
+│   └── OpeQueryHelper.cs                    # Pre-encode helpers for queries
 │
 └── SecureORM.Tests/                         # Integration tests
     └── OpeIntegrationTests.cs               # 14 tests with SQLite in-memory
@@ -298,7 +352,7 @@ src/
 
 The encoder supports 95 printable ASCII characters:
 - Space
-- Punctuation: `!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~`
+- Punctuation: `` !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~ ``
 - Digits: `0-9`
 - Uppercase: `A-Z`
 - Lowercase: `a-z`
@@ -324,7 +378,6 @@ Characters outside this set (Unicode, accented characters, etc.) will throw at e
 ## Running Tests
 
 ```bash
-cd src
 dotnet test
 ```
 
@@ -343,7 +396,7 @@ The test suite includes 14 integration tests using SQLite in-memory:
 
 ## Roadmap
 
-- [ ] NuGet package publishing
+- [x] NuGet packages published
 - [ ] Negative number support
 - [ ] Unicode / normalization layer
 - [ ] Custom `IMethodCallTranslator` for native LINQ prefix/range queries (no raw SQL needed)
@@ -351,12 +404,14 @@ The test suite includes 14 integration tests using SQLite in-memory:
 - [ ] Key rotation support
 - [ ] Benchmarks and performance profiling
 - [ ] Additional ORM support (Dapper extensions)
+- [ ] `int`, `short`, `float`, `double` property type support
+- [ ] Multi-tenant ASP.NET Core middleware (key per request context)
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Here are some areas where the community can help:
+Contributions are welcome! Here are some areas where the community can help:
 
 **Core improvements:**
 - Stronger key derivation (HKDF, per-position variation instead of global offset)
@@ -379,8 +434,8 @@ Contributions are welcome. Here are some areas where the community can help:
 ### Development Setup
 
 ```bash
-git clone https://github.com/your-org/SecureORM.git
-cd SecureORM/src
+git clone https://github.com/nokeyvault/SecureORM.git
+cd SecureORM
 dotnet restore
 dotnet build
 dotnet test

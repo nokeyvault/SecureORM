@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>SecureORM.EntityFrameworkCore</id>
+    <version>1.0.0</version>
+    <authors>NoKeyVault</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/nokeyvault/SecureORM</projectUrl>
+    <description>Entity Framework Core extensions for SecureORM. Transparent order-preserving encoding via attributes and value converters. Query encrypted data with ORDER BY, exact match, prefix search, and range queries — without decryption.</description>
+    <tags>efcore entity-framework encryption encoding ope order-preserving security database query orm</tags>
+    <repository type="git" url="https://github.com/nokeyvault/SecureORM.git" commit="7333ae6d56ee807b2b26b1c6f7ca3f7e294d011d" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="SecureORM.Core" version="1.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.EntityFrameworkCore" version="8.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.EntityFrameworkCore.Relational" version="8.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="D:\Personal\Projects\SecureORM\SecureORM.EntityFrameworkCore\bin\Release\net8.0\SecureORM.EntityFrameworkCore.dll" target="lib\net8.0\SecureORM.EntityFrameworkCore.dll" />
+    <file src="D:\Personal\Projects\SecureORM\SecureORM.EntityFrameworkCore\bin\Release\net8.0\SecureORM.EntityFrameworkCore.xml" target="lib\net8.0\SecureORM.EntityFrameworkCore.xml" />
+    <file src="D:\Personal\Projects\SecureORM\README.md" target="\README.md" />
+  </files>
+</package>

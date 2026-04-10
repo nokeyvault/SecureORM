@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SecureORM.EntityFrameworkCore</name>
+    </assembly>
+    <members>
+        <member name="T:SecureORM.EntityFrameworkCore.Attributes.OpeDecimalAttribute">
+            <summary>
+            Marks a decimal property for OPE encoding. The value is scaled by
+            the specified fractional width and stored as an order-preserving encoded string.
+            </summary>
+        </member>
+        <member name="T:SecureORM.EntityFrameworkCore.Attributes.OpeEncodedAttribute">
+            <summary>
+            Marks a string property for OPE encoding. The value is stored as an
+            order-preserving encoded string in the database column.
+            </summary>
+        </member>
+        <member name="T:SecureORM.EntityFrameworkCore.Attributes.OpeIntegerAttribute">
+            <summary>
+            Marks a long/int property for OPE encoding. The numeric value is
+            zero-padded and stored as an order-preserving encoded string.
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Extensions.ModelBuilderExtensions.ApplyOpeEncodings(Microsoft.EntityFrameworkCore.ModelBuilder,SecureORM.Core.Encoding.OPEEncoder)">
+            <summary>
+            Scans all registered entity types for [OpeEncoded], [OpeInteger], and
+            [OpeDecimal] attributes and wires up the appropriate value converters.
+            Call this in OnModelCreating.
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Extensions.PropertyBuilderExtensions.HasOpeEncoding(Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder{System.String},SecureORM.Core.Encoding.OPEEncoder)">
+            <summary>
+            Configures the string property for OPE encoding (fluent API alternative to [OpeEncoded]).
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Extensions.PropertyBuilderExtensions.HasOpeIntegerEncoding(Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder{System.Int64},SecureORM.Core.Encoding.OPEEncoder)">
+            <summary>
+            Configures the long property for OPE integer encoding (fluent API alternative to [OpeInteger]).
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Extensions.PropertyBuilderExtensions.HasOpeDecimalEncoding(Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder{System.Decimal},SecureORM.Core.Encoding.OPEEncoder,System.Int32)">
+            <summary>
+            Configures the decimal property for OPE decimal encoding (fluent API alternative to [OpeDecimal]).
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.Extensions.ServiceCollectionExtensions.AddSecureOrm(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{SecureORM.EntityFrameworkCore.Configuration.OpeEncodingOptions})">
+            <summary>
+            Registers the OPE encoding services (OpeEncoderFactory, OPEEncoder, OpeQueryHelper).
+            </summary>
+        </member>
+        <member name="T:SecureORM.EntityFrameworkCore.OpeQueryHelper">
+            <summary>
+            Pre-encodes query parameters for use in LINQ expressions against OPE-encoded columns.
+            Use this for prefix search and range queries where EF Core cannot auto-apply the converter.
+            </summary>
+        </member>
+        <member name="M:SecureORM.EntityFrameworkCore.OpeQueryHelper.EncodePrefixLike(System.String)">
+            <summary>
+            Returns the encoded prefix with a SQL LIKE wildcard appended (e.g. "encoded%").
+            Use directly in FromSqlRaw LIKE clauses.
+            </summary>
+        </member>
+    </members>
+</doc>

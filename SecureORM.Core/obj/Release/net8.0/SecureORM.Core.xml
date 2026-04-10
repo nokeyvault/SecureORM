@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SecureORM.Core</name>
+    </assembly>
+    <members>
+        <member name="T:SecureORM.Core.Encoding.OPEEncoder">
+             <summary>
+             Order-Preserving Encoder (OPE)
+            
+             Every character in the supported universe maps to a fixed-width numeric code.
+             Codes are assigned in strict ascending order — smaller input always produces
+             a smaller code, guaranteeing database-level ORDER BY, range queries, and
+             prefix LIKE queries work correctly on the encoded ciphertext without decryption.
+            
+             A client-supplied key derives a deterministic visual offset that shifts
+             all codes by a key-specific amount.
+             </summary>
+        </member>
+    </members>
+</doc>
